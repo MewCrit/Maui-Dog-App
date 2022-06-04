@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:doggy="clr-namespace:DogApp.Models"
+             xmlns:viewmodel="clr-namespace:DogApp.ViewModels"
+             x:DataType="viewmodel:DogsViewModel"
+             Title="Dog App"
+             x:Class="DogApp.MainPage">
+
+
+    <Grid ColumnDefinitions="*,*"
+          ColumnSpacing="5"
+          RowDefinitions="*,Auto"
+          RowSpacing="0">
+
+        <Label Text="Check out Dogs" ></Label>
+
+        <CollectionView Background="White"
+                        Grid.ColumnSpan="2"
+                        ItemsSource="{Binding Dogs}"
+                        SelectionChanged="CollectionView_SelectionChanged"
+                        SelectionMode="Single">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="doggy:Dog">
+                    <Grid Padding="10">
+                        <Frame HeightRequest="125">
+                            <Grid Padding="10" ColumnDefinitions="125, *">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="CollectionView_SelectionChanged" NumberOfTapsRequired="1"/>
+                                </Grid.GestureRecognizers>
+                                <Image Source="{Binding Picture}"
+                                   HeightRequest="140"
+                                   WidthRequest="120"/>
+
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Padding="10"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding Name}" FontSize="24"></Label>
+                                    <Label Text="{Binding Gender}" FontSize="14"></Label>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+
+
+        </CollectionView>
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsNotBusy}" />
+
+
+
+
+    </Grid>
+
+</ContentPage>

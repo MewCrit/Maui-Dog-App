@@ -1,0 +1,40 @@
+version: '3.9'
+services:
+   doggy-services:
+       image : dog-service
+       container_name: dog-service
+       ports: 
+         - 8060:8060
+       environment:
+         - ASPNETCORE_URLS=http://+:8060
+       expose:
+         - 8060
+       networks:
+         - dog-network
+   mssql:
+       image: mcr.microsoft.com/mssql/server:2019-latest
+       container_name: dog_db
+       ports:
+           - 1433:1433
+       environment: 
+       - SA_PASSWORD=Abc1234567*
+       - ACCEPT_EULA=Y
+       volumes:
+        - ./db:/scripts/
+       networks:
+         - dog-network
+       command:
+        - /bin/bash
+        - -c 
+        - |
+            /opt/mssql/bin/sqlservr &
+            sleep 30
+            for foo in /scripts/*.sql
+            do /opt/mssql-tools/bin/sqlcmd -U sa -P $$SA_PASSWORD -l 30 -e -i $$foo
+            done
+            sleep infinity
+
+networks:
+    dog-network:
+      driver: bridge
+      name : dog-network
